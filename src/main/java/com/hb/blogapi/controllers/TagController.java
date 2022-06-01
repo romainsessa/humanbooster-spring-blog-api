@@ -21,7 +21,7 @@ import com.hb.blogapi.service.TagService;
 @RestController
 @RequestMapping(value = "api/tag")
 public class TagController {
-	
+
 	@Autowired
 	private TagService tagService;
 
@@ -31,44 +31,42 @@ public class TagController {
 		TagDTO createdTag = tagService.save(tag);
 		return createdTag;
 	}
-	
+
 	// Read
 	@GetMapping
 	public List<TagDTO> getTags() {
 		return tagService.getTags();
 	}
-	
+
 	@GetMapping("{id}")
-	public ResponseEntity<TagDTO> getTag(
-			@PathVariable(name = "id") Integer id) {
+	public ResponseEntity<TagDTO> getTag(@PathVariable(name = "id") Integer id) {
 		TagDTO tag = tagService.getTag(id);
-		if(tag == null) {
+		if (tag == null) {
 			return new ResponseEntity<TagDTO>(HttpStatus.NOT_FOUND);
 		} else {
 			return new ResponseEntity<TagDTO>(tag, HttpStatus.OK);
-		}		
+		}
 	}
-	
+
 	// Update
 	@PutMapping
 	public TagDTO replaceTag(@RequestBody TagDTO tag) {
-		return tagService.save(tag);		
+		return tagService.save(tag);
 	}
-	
+
 	@PatchMapping
 	public TagDTO partialReplaceTag(@RequestBody TagDTO tag) {
 		TagDTO existingTag = tagService.getTag(tag.getId());
-		if(tag.getName() != null && !tag.getName().equals(existingTag.getName())) {
+		if (tag.getName() != null && !tag.getName().equals(existingTag.getName())) {
 			existingTag.setName(tag.getName());
-		}		
+		}
 		return tagService.save(existingTag);
-	}	
-	
+	}
+
 	// Delete
 	@DeleteMapping("{id}")
 	public void delete(@PathVariable(name = "id") Integer id) {
 		tagService.delete(id);
 	}
-	
-	
+
 }

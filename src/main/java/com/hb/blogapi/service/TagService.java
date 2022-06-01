@@ -13,18 +13,22 @@ public class TagService {
 	public List<TagDTO> getTags() {
 		List<TagDTO> tags = new ArrayList<>();
 		tags.add(new TagDTO(1, "tag1"));
-		tags.add(new TagDTO(2, "tag2"));	
-		
+		tags.add(new TagDTO(2, "tag2"));
+
 		return tags;
 	}
 
 	public TagDTO getTag(Integer id) {
-		return new TagDTO(id, "tag"+id);
+		if (id == 4) {
+			return null;
+		} else {
+			return new TagDTO(id, "tag" + id);
+		}
 	}
 
 	public TagDTO save(TagDTO tag) {
 		// simulation de la génération de l'id
-		tag.setId(1); 
+		tag.setId(1);
 		return tag;
 	}
 

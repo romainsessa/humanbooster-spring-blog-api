@@ -2,38 +2,56 @@ package com.hb.blogapi.service;
 
 import java.util.ArrayList;
 import java.util.List;
+import javax.transaction.Transactional;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.hb.blogapi.dto.TagDTO;
+import com.hb.blogapi.dto.transformers.TransformerFactory;
+import com.hb.blogapi.entities.Post;
+import com.hb.blogapi.entities.Tag;
+import com.hb.blogapi.repositories.TagRepository;
 
 @Service
-public class TagService {
+@Transactional
+public class TagService implements ITagService {
 
-	public List<TagDTO> getTags() {
-		List<TagDTO> tags = new ArrayList<>();
-		tags.add(new TagDTO(1, "tag1"));
-		tags.add(new TagDTO(2, "tag2"));
+	@Autowired
+	private TagRepository tagRepository;
 
-		return tags;
-	}
-
-	public TagDTO getTag(Integer id) {
-		if (id == 4) { // Just to simulate an error use case
-			return null;
-		} else {
-			return new TagDTO(id, "tag" + id);
+	@Override
+	public List<TagDTO> getTagDTOs() {
+		Iterable<Tag> tags = tagRepository.findAll();
+		List<TagDTO> tagDTOs = new ArrayList<>();
+		for (Tag tag : tags) {
+			TagDTO tagDTO = TransformerFactory.getTagTransformer().transform(tag);
+			tagDTOs.add(tagDTO);
 		}
+		return tagDTOs;
 	}
 
+	public TagDTO getTagDTO(Integer id) {
+		Tag entityTag = tagRepository.findById(id).get();
+		return TransformerFactory.getTagTransformer().transform(entityTag);
+	}
+
+	@Override
 	public TagDTO save(TagDTO tag) {
-		// Id generation simulation
-		tag.setId(1);
-		return tag;
+		Tag entityTag = TransformerFactory.getTagTransformer().transform(tag);
+		entityTag = tagRepository.save(entityTag);
+		return TransformerFactory.getTagTransformer().transform(entityTag);
 	}
 
+	@Override
 	public void delete(Integer id) {
-		System.out.println("delete" + id);
+		Tag t = tagRepository.findById(id).get();
+		List<Post> posts = new ArrayList<>();
+		posts.addAll(t.getPosts());
+		for (Post post : posts) {
+			t.removePost(post);
+		}
+		tagRepository.deleteById(id);
 	}
 
 }

@@ -35,12 +35,12 @@ public class TagController {
 	// Read
 	@GetMapping
 	public List<TagDTO> getTags() {
-		return tagService.getTags();
+		return tagService.getTagDTOs();
 	}
 
 	@GetMapping("{id}")
 	public ResponseEntity<TagDTO> getTag(@PathVariable(name = "id") Integer id) {
-		TagDTO tag = tagService.getTag(id);
+		TagDTO tag = tagService.getTagDTO(id);
 		if (tag == null) {
 			return new ResponseEntity<TagDTO>(HttpStatus.NOT_FOUND);
 		} else {
@@ -56,7 +56,7 @@ public class TagController {
 
 	@PatchMapping
 	public TagDTO partialReplaceTag(@RequestBody TagDTO tag) {
-		TagDTO existingTag = tagService.getTag(tag.getId());
+		TagDTO existingTag = tagService.getTagDTO(tag.getId());
 		if (tag.getName() != null && !tag.getName().equals(existingTag.getName())) {
 			existingTag.setName(tag.getName());
 		}

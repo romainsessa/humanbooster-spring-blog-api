@@ -40,6 +40,7 @@ public class JwtTokenFilter extends OncePerRequestFilter {
 			filterChain.doFilter(request, response);
 			return;
 		}
+
 		String token = header.split(" ")[1].trim();
 
 		logger.info("Extracted token is : " + token);

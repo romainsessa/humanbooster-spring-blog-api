@@ -1,9 +1,12 @@
 package com.hb.blogapi.dto;
 
+import java.util.List;
+
 public class TagDTO {
 
 	private Integer id;
 	private String name;
+	private List<PostDTO> posts;
 
 	public Integer getId() {
 		return id;
@@ -21,18 +24,27 @@ public class TagDTO {
 		this.name = name;
 	}
 
+	public List<PostDTO> getPosts() {
+		return posts;
+	}
+
+	public void setPosts(List<PostDTO> posts) {
+		this.posts = posts;
+	}
+
 	public TagDTO() {
 	}
 
-	public TagDTO(Integer id, String name) {
+	public TagDTO(Integer id, String name, List<PostDTO> posts) {
 		super();
 		this.id = id;
 		this.name = name;
+		this.posts = posts;
 	}
 
 	@Override
 	public String toString() {
-		return "TagDTO [id=" + id + ", name=" + name + "]";
+		return "TagDTO [id=" + id + ", name=" + name + ", posts=" + posts + "]";
 	}
 
 }

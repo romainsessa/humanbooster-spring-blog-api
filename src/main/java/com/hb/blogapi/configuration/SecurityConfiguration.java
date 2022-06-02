@@ -34,13 +34,14 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 	}
 	
 	@Override
-	protected void configure(HttpSecurity http) throws Exception {
+	protected void configure(HttpSecurity http) throws Exception { // Access control - authorisation
 		http = http.cors().and().csrf().disable(); // CRSF should be disable as we are not using web browser
 		
 		http = http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and();
 		
 		http.authorizeRequests()
-			.antMatchers("/api/public/**").permitAll()
+//			.antMatchers("/api/public/**").permitAll()
+			.antMatchers("/api/**").permitAll() // unlock security
 			.anyRequest().authenticated();
 		
 		// This line following is mandatory to enable the token validation at each request
@@ -48,7 +49,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 	}
 	
 	@Override
-	protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+	protected void configure(AuthenticationManagerBuilder auth) throws Exception { // Authentification
 		auth.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder());
 	}
 	

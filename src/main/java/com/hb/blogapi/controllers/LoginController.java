@@ -27,35 +27,35 @@ public class LoginController {
 
 	@Autowired
 	private AuthenticationManager authenticationManager;
-	
+
 	@Autowired
 	private JwtTokenUtil jwtTokenUtil;
-	
+
 	private Logger logger = LoggerFactory.getLogger(LoginController.class);
 
 	@PostMapping("login")
 	public ResponseEntity<String> login(@RequestBody UserDTO user) {
 
 		try {
-
+			// Calling the authenticate method of the AuthenticationManager,
+			// Spring Security will get the user from DB and compare password.
 			Authentication authentication = authenticationManager
 					.authenticate(new UsernamePasswordAuthenticationToken(user.getUsername(), user.getPassword()));
-			
+
 			User authenticatedUser = (User) authentication.getPrincipal();
-			
+
 			String token = jwtTokenUtil.generateAccessToken(authenticatedUser);
-			logger.info(token);
-			
-			return ResponseEntity.ok()
-					.header(HttpHeaders.AUTHORIZATION, token)					
-					.body(user.getUsername() + " logged");
-			
-			
+
+			logger.info("Generated token for user " + user.getUsername() + " is " + token);
+
+			// Token should be set on the response header 'AUTHORIZATION'
+			return ResponseEntity.ok().header(HttpHeaders.AUTHORIZATION, token).body(user.getUsername() + " logged");
+
 		} catch (BadCredentialsException e) {
+			logger.error("Username or password are not valid");
 			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
 		}
 
-	
 	}
 
 }

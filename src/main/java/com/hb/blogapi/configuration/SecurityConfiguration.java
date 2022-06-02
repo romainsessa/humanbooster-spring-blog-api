@@ -35,15 +35,16 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 	
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
-		http = http.cors().and().csrf().disable();
+		http = http.cors().and().csrf().disable(); // CRSF should be disable as we are not using web browser
 		
 		http = http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and();
 		
 		http.authorizeRequests()
-			.antMatchers("/api/**").permitAll()
+			.antMatchers("/api/public/**").permitAll()
 			.anyRequest().authenticated();
 		
-		http.addFilterBefore(filter, UsernamePasswordAuthenticationFilter.class);
+		// This line following is mandatory to enable the token validation at each request
+		http.addFilterBefore(filter, UsernamePasswordAuthenticationFilter.class); 
 	}
 	
 	@Override

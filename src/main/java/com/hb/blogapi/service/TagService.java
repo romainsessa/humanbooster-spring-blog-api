@@ -19,7 +19,7 @@ public class TagService {
 	}
 
 	public TagDTO getTag(Integer id) {
-		if (id == 4) {
+		if (id == 4) { // Just to simulate an error use case
 			return null;
 		} else {
 			return new TagDTO(id, "tag" + id);
@@ -27,7 +27,7 @@ public class TagService {
 	}
 
 	public TagDTO save(TagDTO tag) {
-		// simulation de la génération de l'id
+		// Id generation simulation
 		tag.setId(1);
 		return tag;
 	}

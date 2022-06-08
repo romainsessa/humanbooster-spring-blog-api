@@ -1,4 +1,4 @@
-package com.hb.blogapi.configuration;
+package com.hb.blogapi.security;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;

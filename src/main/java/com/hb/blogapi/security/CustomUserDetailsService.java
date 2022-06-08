@@ -1,4 +1,4 @@
-package com.hb.blogapi.configuration;
+package com.hb.blogapi.security;
 
 import java.util.ArrayList;
 import java.util.Collection;

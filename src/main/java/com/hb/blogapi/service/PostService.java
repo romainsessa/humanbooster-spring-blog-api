@@ -2,16 +2,20 @@ package com.hb.blogapi.service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
+
 import javax.transaction.Transactional;
 
 import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 
 import com.hb.blogapi.dto.PostDTO;
 import com.hb.blogapi.dto.transformers.TransformerFactory;
 import com.hb.blogapi.entities.Post;
 import com.hb.blogapi.entities.Tag;
+import com.hb.blogapi.exceptions.NotFoundException;
 import com.hb.blogapi.repositories.PostRepository;
 import com.hb.blogapi.repositories.TagRepository;
 
@@ -53,9 +57,12 @@ public class PostService implements IPostService {
 		return postDTOs;
 	}
 
-	public PostDTO getPostDTO(Integer id) {
-		Post post = postRepository.findById(id).get();
-		return TransformerFactory.getPostTransformer().transform(post);
+	public PostDTO getPostDTO(Integer id) throws NotFoundException {
+		Optional<Post> result = postRepository.findById(id);
+		if (result.isEmpty()) {
+			throw new NotFoundException();
+		}
+		return TransformerFactory.getPostTransformer().transform(result.get());
 	}
 
 	public PostDTO save(PostDTO post) {
@@ -64,8 +71,12 @@ public class PostService implements IPostService {
 		return TransformerFactory.getPostTransformer().transform(entity);
 	}
 
-	public void delete(Integer id) {
-		postRepository.deleteById(id);
+	public void delete(Integer id) throws NotFoundException {
+		try {
+			postRepository.deleteById(id);
+		} catch (EmptyResultDataAccessException e) {
+			throw new NotFoundException();
+		}
 	}
 
 	public void mapPostTag(Integer postId, Integer tagId) {

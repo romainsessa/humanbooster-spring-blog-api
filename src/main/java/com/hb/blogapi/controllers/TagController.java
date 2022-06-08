@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.hb.blogapi.dto.TagDTO;
+import com.hb.blogapi.exceptions.NotFoundException;
 import com.hb.blogapi.service.TagService;
 
 @RestController
@@ -25,14 +26,12 @@ public class TagController {
 	@Autowired
 	private TagService tagService;
 
-	// Create
 	@PostMapping
 	public TagDTO create(@RequestBody TagDTO tag) {
 		TagDTO createdTag = tagService.save(tag);
 		return createdTag;
 	}
 
-	// Read
 	@GetMapping
 	public List<TagDTO> getTags() {
 		return tagService.getTagDTOs();
@@ -40,33 +39,41 @@ public class TagController {
 
 	@GetMapping("{id}")
 	public ResponseEntity<TagDTO> getTag(@PathVariable(name = "id") Integer id) {
-		TagDTO tag = tagService.getTagDTO(id);
-		if (tag == null) {
-			return new ResponseEntity<TagDTO>(HttpStatus.NOT_FOUND);
-		} else {
+		try {
+			TagDTO tag = tagService.getTagDTO(id);
 			return new ResponseEntity<TagDTO>(tag, HttpStatus.OK);
+		} catch (NotFoundException e) {
+			return new ResponseEntity<TagDTO>(HttpStatus.NOT_FOUND);
 		}
 	}
 
-	// Update
 	@PutMapping
 	public TagDTO replaceTag(@RequestBody TagDTO tag) {
 		return tagService.save(tag);
 	}
 
 	@PatchMapping
-	public TagDTO partialReplaceTag(@RequestBody TagDTO tag) {
-		TagDTO existingTag = tagService.getTagDTO(tag.getId());
-		if (tag.getName() != null && !tag.getName().equals(existingTag.getName())) {
-			existingTag.setName(tag.getName());
+	public ResponseEntity<TagDTO> partialReplaceTag(@RequestBody TagDTO tag) {
+		try {
+			TagDTO existingTag = tagService.getTagDTO(tag.getId());
+			if (tag.getName() != null && !tag.getName().equals(existingTag.getName())) {
+				existingTag.setName(tag.getName());
+			}
+			TagDTO updatedTag = tagService.save(existingTag);
+			return new ResponseEntity<TagDTO>(updatedTag, HttpStatus.OK);
+		} catch (NotFoundException e) {
+			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 		}
-		return tagService.save(existingTag);
 	}
 
-	// Delete
 	@DeleteMapping("{id}")
-	public void delete(@PathVariable(name = "id") Integer id) {
-		tagService.delete(id);
+	public ResponseEntity<Void> delete(@PathVariable(name = "id") Integer id) {
+		try {
+			tagService.delete(id);
+			return new ResponseEntity<Void>(HttpStatus.OK);
+		} catch (NotFoundException e) {
+			return new ResponseEntity<Void>(HttpStatus.NOT_FOUND);
+		}
 	}
 
 }

@@ -1,4 +1,4 @@
-package com.hb.blogapi.configuration;
+package com.hb.blogapi.security;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

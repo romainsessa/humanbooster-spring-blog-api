@@ -1,4 +1,4 @@
-package com.hb.blogapi.configuration;
+package com.hb.blogapi.security;
 
 import java.io.IOException;
 

@@ -2,6 +2,8 @@ package com.hb.blogapi.service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
+
 import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,6 +13,7 @@ import com.hb.blogapi.dto.TagDTO;
 import com.hb.blogapi.dto.transformers.TransformerFactory;
 import com.hb.blogapi.entities.Post;
 import com.hb.blogapi.entities.Tag;
+import com.hb.blogapi.exceptions.NotFoundException;
 import com.hb.blogapi.repositories.TagRepository;
 
 @Service
@@ -31,9 +34,12 @@ public class TagService implements ITagService {
 		return tagDTOs;
 	}
 
-	public TagDTO getTagDTO(Integer id) {
-		Tag entityTag = tagRepository.findById(id).get();
-		return TransformerFactory.getTagTransformer().transform(entityTag);
+	public TagDTO getTagDTO(Integer id) throws NotFoundException {
+		Optional<Tag> result = tagRepository.findById(id);
+		if(result.isEmpty()) {
+			throw new NotFoundException();
+		}
+		return TransformerFactory.getTagTransformer().transform(result.get());
 	}
 
 	@Override
@@ -44,10 +50,13 @@ public class TagService implements ITagService {
 	}
 
 	@Override
-	public void delete(Integer id) {
-		Tag t = tagRepository.findById(id).get();
-		List<Post> posts = new ArrayList<>();
-		posts.addAll(t.getPosts());
+	public void delete(Integer id) throws NotFoundException {
+		Optional<Tag> result = tagRepository.findById(id);
+		if(result.isEmpty()) {
+			throw new NotFoundException();
+		}
+		Tag t = result.get();
+		List<Post> posts = new ArrayList<>(t.getPosts());		
 		for (Post post : posts) {
 			t.removePost(post);
 		}

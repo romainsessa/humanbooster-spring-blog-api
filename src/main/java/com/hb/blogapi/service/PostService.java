@@ -79,16 +79,26 @@ public class PostService implements IPostService {
 		}
 	}
 
-	public void mapPostTag(Integer postId, Integer tagId) {
-		Post p = postRepository.findById(postId).get();
-		Tag t = tagRepository.findById(tagId).get();
+	public void mapPostTag(Integer postId, Integer tagId) throws NotFoundException {
+		Optional<Post> resultP = postRepository.findById(postId);
+		Optional<Tag> resultT = tagRepository.findById(tagId);
+		if (resultP.isEmpty() || resultT.isEmpty()) {
+			throw new NotFoundException();
+		}
+		Post p = resultP.get();
+		Tag t = resultT.get();
 		p.addTag(t);
 		postRepository.save(p);
 	}
 
-	public void unmapPostTag(Integer postId, Integer tagId) {
-		Post p = postRepository.findById(postId).get();
-		Tag t = tagRepository.findById(tagId).get();
+	public void unmapPostTag(Integer postId, Integer tagId) throws NotFoundException {
+		Optional<Post> resultP = postRepository.findById(postId);
+		Optional<Tag> resultT = tagRepository.findById(tagId);
+		if (resultP.isEmpty() || resultT.isEmpty()) {
+			throw new NotFoundException();
+		}
+		Post p = resultP.get();
+		Tag t = resultT.get();
 		p.removeTag(t);
 		postRepository.save(p);
 	}

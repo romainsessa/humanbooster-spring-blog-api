@@ -1,12 +1,13 @@
 package com.hb.blogapi.dto;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class TagDTO {
 
 	private Integer id;
 	private String name;
-	private List<PostDTO> posts;
+	private List<PostDTO> posts = new ArrayList<>();
 
 	public Integer getId() {
 		return id;

@@ -60,4 +60,26 @@ public class PostController {
 		return response;
 	}
 
+	@GetMapping("{postId}/map/{tagId}")
+	public ResponseEntity<Void> mapPostTag(@PathVariable(name = "postId") Integer postId,
+			@PathVariable(name = "tagId") Integer tagId) {
+		try {
+			postService.mapPostTag(postId, tagId);
+			return new ResponseEntity<Void>(HttpStatus.OK);
+		} catch (NotFoundException e) {
+			return new ResponseEntity<Void>(HttpStatus.NOT_FOUND);
+		}
+	}
+
+	@GetMapping("{postId}/unmap/{tagId}")
+	public ResponseEntity<Void> unmapPostTag(@PathVariable(name = "postId") Integer postId,
+			@PathVariable(name = "tagId") Integer tagId) {
+		try {
+			postService.unmapPostTag(postId, tagId);
+			return new ResponseEntity<Void>(HttpStatus.OK);
+		} catch (NotFoundException e) {
+			return new ResponseEntity<Void>(HttpStatus.NOT_FOUND);
+		}
+	}
+
 }

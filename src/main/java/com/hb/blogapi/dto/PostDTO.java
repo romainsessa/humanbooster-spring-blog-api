@@ -1,5 +1,6 @@
 package com.hb.blogapi.dto;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class PostDTO {
@@ -7,8 +8,8 @@ public class PostDTO {
 	private Integer id;
 	private String title;
 	private PostDetailsDTO details;
-	private List<PostCommentDTO> comments;
-	private List<TagDTO> tags;
+	private List<PostCommentDTO> comments = new ArrayList<>();
+	private List<TagDTO> tags = new ArrayList<>();
 
 	public Integer getId() {
 		return id;

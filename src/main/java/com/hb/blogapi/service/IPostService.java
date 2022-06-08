@@ -14,7 +14,7 @@ public interface IPostService {
 
 	public void delete(Integer id) throws NotFoundException;
 
-	public void mapPostTag(Integer postId, Integer tagId);
+	public void mapPostTag(Integer postId, Integer tagId) throws NotFoundException;
 
-	public void unmapPostTag(Integer postId, Integer tagId);
+	public void unmapPostTag(Integer postId, Integer tagId) throws NotFoundException;
 }
